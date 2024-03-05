@@ -13,7 +13,7 @@ class User(Base):
 
     id = Column(Integer, primary_key=True)
     email = Column(String(225), unique=True)
-    hashed_password = Column(LargeBinary)
+    hashed_password = Column(String)
 
     UniqueConstraint("email", name="uq_user_email")
 
@@ -28,10 +28,10 @@ class User(Base):
         """Transforms password from it's raw textual form to
         cryptographic hashes
         """
-        return bcrypt.hashpw(password.encode(), bcrypt.gensalt())
+        return bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()
 
     def validate_password(self, pwd) -> bool:
-        return bcrypt.checkpw(password=pwd.encode(), hashed_password=self.hashed_password)
+        return bcrypt.checkpw(password=pwd.encode(), hashed_password=self.hashed_password.encode())
 
     def generate_token(self) -> dict:
         """Generate our JWT"""
