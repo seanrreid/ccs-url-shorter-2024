@@ -93,3 +93,7 @@ async def login(payload: UserAccountSchema, status_code=200):
         )
 
     return user.generate_token()
+
+@app.post('/verify')
+async def verify_token(payload):
+    is_verified: bool = user.verify_token(payload.token)

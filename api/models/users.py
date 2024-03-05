@@ -42,6 +42,10 @@ class User(Base):
             )
         }
 
+    def verify_token(token):
+       return jwt.decode(token, key=settings.SECRET_KEY, algorithms=['HS256', ])
+
+
 
 class UserBaseSchema(BaseModel):
     email: str
