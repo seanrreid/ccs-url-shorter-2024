@@ -1,5 +1,9 @@
 import { Form, redirect } from 'react-router-dom';
 
+import Button from '../components/Button';
+
+import styles from './form.module.css'
+
 export async function action({ request }) {
     const formData = await request.formData();
     const email = formData.get('email');
@@ -40,7 +44,7 @@ export async function action({ request }) {
 
 const Login = () => {
     return (
-        <Form method='post'>
+        <Form method='post' className={styles.form}>
             <label>
                 Email Address
                 <input type='email' name='email' />
@@ -49,7 +53,7 @@ const Login = () => {
                 Password
                 <input type='password' name='password' />
             </label>
-            <button type='submit'>Login</button>
+            <Button type='submit'>Login</Button>
         </Form>
     );
 };

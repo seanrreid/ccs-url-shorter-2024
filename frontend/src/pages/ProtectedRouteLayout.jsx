@@ -3,10 +3,10 @@ import { Navigate, Outlet } from 'react-router-dom';
 import { useAuth } from '../AuthContext';
 
 const ProtectedRouteLayout = () => {
-    const { token } = useAuth();
+    const { isAuth } = useAuth();
 
     // Check if the user is authenticated
-    if (!token) {
+    if (!isAuth) {
         // If not authenticated, redirect to the login page
         return <Navigate to='/login' />;
     }
