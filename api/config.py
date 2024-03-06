@@ -18,7 +18,9 @@ class Settings:
     POSTGRES_DB: str = os.getenv("POSTGRES_DB", "tdd")
     DATABASE_URL = f"postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{
         POSTGRES_SERVER}:{POSTGRES_PORT}/{POSTGRES_DB}"
-    SECRET_KEY: str = 'Stay Rad'
+    SECRET_KEY = "09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7"
+    ALGORITHM = "HS256"
+    ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 
 settings = Settings()

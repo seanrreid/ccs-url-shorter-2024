@@ -7,7 +7,6 @@ import jwt
 from config import settings
 from .base import Base
 
-
 class User(Base):
     __tablename__ = "users"
 
@@ -32,19 +31,6 @@ class User(Base):
 
     def validate_password(self, pwd) -> bool:
         return bcrypt.checkpw(password=pwd.encode(), hashed_password=self.hashed_password.encode())
-
-    def generate_token(self) -> dict:
-        """Generate our JWT"""
-        return {
-            "access_token": jwt.encode(
-                {"email": self.email},
-                settings.SECRET_KEY
-            )
-        }
-
-    def verify_token(token):
-       return jwt.decode(token, key=settings.SECRET_KEY, algorithms=['HS256', ])
-
 
 
 class UserBaseSchema(BaseModel):
