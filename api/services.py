@@ -6,6 +6,8 @@ from config import settings
 
 import jwt
 
+# I'm on the fence about seperating these methods into this file
+# There's a case to be made that they could also work in the model as static methods?
 
 def create_user(user: UserAccountSchema):
     db_user = User(**user.dict())

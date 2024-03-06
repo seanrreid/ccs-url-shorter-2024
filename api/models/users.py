@@ -1,5 +1,6 @@
 from sqlalchemy import Column, Integer, String, UniqueConstraint, LargeBinary
 from pydantic import BaseModel, Field
+from typing import Type
 
 import bcrypt
 import jwt
@@ -17,14 +18,17 @@ class User(Base):
     UniqueConstraint("email", name="uq_user_email")
 
     def __repr__(self):
-        """Returns string representation of model instance"""
-        """ !r means the value is formatted using its
-            __repr__ method rather than its __str__ method."""
+        """
+        Returns string representation of model instance
+        !r means the value is formatted using its
+        __repr__ method rather than its __str__ method.
+        """
         return f"<User {self.email!r}>"
 
     @staticmethod
     def hash_password(password) -> str:
-        """Transforms password from it's raw textual form to
+        """
+        Transforms password from it's raw textual form to
         cryptographic hashes
         """
         return bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()

@@ -14,10 +14,14 @@ from models.base import Base
 from models.links import Links, LinksSchema
 from models.users import User, UserSchema, UserAccountSchema
 from models.tokens import Token, TokenData, create_access_token
-from services import create_user, get_user, get_current_user_token
+from services import get_current_user_token, create_user, get_user
 
 import jwt
 
+"""
+I feel like I can move these and not worry about loading them here?
+I need to look into what some other configs do...
+"""
 
 def create_tables():
     Base.metadata.create_all(bind=engine)
@@ -118,7 +122,7 @@ async def login(payload: UserAccountSchema, status_code=200):
     return Token(access_token=access_token, token_type="bearer")
 
 
-@app.post('/links/add')
+@app.post('/links/add', status_code=200)
 async def add_link(link_data: LinksSchema, current_user: str = Depends(get_current_user_token)):
     link = Links(**link_data.dict())
     session.add(link)
