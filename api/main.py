@@ -23,6 +23,7 @@ I feel like I can move these and not worry about loading them here?
 I need to look into what some other configs do...
 """
 
+
 def create_tables():
     Base.metadata.create_all(bind=engine)
 
@@ -95,9 +96,8 @@ def register_user(payload: UserAccountSchema):
     return create_user(user=payload)
 
 
-@app.post('/login')
-async def login(payload: UserAccountSchema, status_code=200):
-    print(payload)
+@app.post('/login', status_code=200)
+async def login(payload: UserAccountSchema):
     try:
         user: User = get_user(email=payload.email)
     except:
