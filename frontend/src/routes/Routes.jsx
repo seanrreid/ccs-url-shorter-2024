@@ -5,7 +5,9 @@ import ProtectedRouteLayout from '../pages/ProtectedRouteLayout';
 import Error from '../pages/Error';
 import Home from './Home';
 import Login, { action as loginAction } from './Login';
+import Links from './Links';
 import AddLink from './AddLink';
+import Logout from './Logout';
 
 const Routes = () => {
     const { isAuth } = useAuth();
@@ -33,8 +35,16 @@ const Routes = () => {
             element: <ProtectedRouteLayout />,
             children: [
                 {
+                    path: '/links/',
+                    element: <Links />,
+                },
+                {
                     path: '/links/add',
                     element: <AddLink />,
+                },
+                {
+                    path: '/logout',
+                    element: <Logout />,
                 },
             ],
         },

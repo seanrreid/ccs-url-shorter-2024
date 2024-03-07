@@ -1,22 +1,40 @@
 import { Link } from 'react-router-dom';
 import { useAuth } from '../AuthContext';
 
-import styles from './nav.module.css'
+import Wrapper from './Wrapper';
+
+import styles from './nav.module.css';
 
 export default function MainNav() {
     const { isAuth } = useAuth();
     return (
-        <nav className={styles.nav}>
-            <ul>
-                <li>{isAuth ? <Link to='/'>Home</Link> : null}</li>
-                <li>
-                    {isAuth ? (
-                        <Link to='/logout'>Logout</Link>
-                    ) : (
-                        <Link to='/login'>Login</Link>
+        <Wrapper>
+            <nav className={styles.nav}>
+                <ul>
+                    {isAuth && (
+                        <li>
+                            <Link to="/">Home</Link>
+                        </li>
                     )}
-                </li>
-            </ul>
-        </nav>
+                    {isAuth && (
+                        <>
+                            <li>
+                                <Link to="/links">View Links</Link>
+                            </li>
+                            <li>
+                                <Link to="/links/add">Add A Link</Link>
+                            </li>
+                        </>
+                    )}
+                    <li>
+                        {isAuth ? (
+                            <Link to="/logout">Logout</Link>
+                        ) : (
+                            <Link to="/login">Login</Link>
+                        )}
+                    </li>
+                </ul>
+            </nav>
+        </Wrapper>
     );
 }

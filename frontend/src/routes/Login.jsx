@@ -1,60 +1,67 @@
-import { Form, redirect } from 'react-router-dom';
-
+/* eslint-disable react-refresh/only-export-components */
+import { Form, Navigate, useActionData } from 'react-router-dom';
+import { useAuth } from '../AuthContext';
+import Wrapper from '../components/Wrapper';
 import Button from '../components/Button';
 
-import styles from './form.module.css'
+import styles from './form.module.css';
+import { useEffect } from 'react';
 
-export async function action({ request }) {
+export const action = async ({ request }) => {
     const formData = await request.formData();
     const email = formData.get('email');
     const password = formData.get('password');
 
     const loginData = { email, password };
 
-    const url = 'http://localhost:8000/login';
-
-    const loginResponse = await fetch(url, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(loginData),
-    })
-        .then(async (response) => {
-            const data = await response.json();
-            return { status: response.status, data };
-        })
-        .catch((error) => {
-            // Handle any errors that occurred during the fetch
-            console.error('ERROR:', error.message);
+    try {
+        const url = 'http://localhost:8000/login';
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(loginData),
         });
 
-    const { status, data } = loginResponse;
+        const statusCode = response.status;
+        const data = await response.json();
 
-    if (status !== 200) {
-        alert(`ERROR CODE: ${status}`);
-        return;
+        const { access_token } = data;
+        localStorage.clear();
+        localStorage.setItem('access_token', access_token);
+        return statusCode === 200 ? true : false;
+    } catch (error) {
+        console.error('ERROR: ', error);
+        return false;
     }
-    if (status === 200) {
-        // We'll do something with the token once we log in
-        console.log(data.access_token);
-        return redirect('/');
-    }
-}
+};
 
 const Login = () => {
-    return (
-        <Form method='post' className={styles.form}>
-            <label>
-                Email Address
-                <input type='email' name='email' />
-            </label>
-            <label>
-                Password
-                <input type='password' name='password' />
-            </label>
-            <Button type='submit'>Login</Button>
-        </Form>
+    const { isAuth, setIsAuth } = useAuth();
+    const response = useActionData();
+
+    useEffect(() => {
+        setIsAuth(response);
+    }, [response, setIsAuth]);
+
+    return !isAuth ? (
+        <Wrapper>
+            <h1>Login</h1>
+            <Form method="post" className={styles.form}>
+                <label>
+                    Email Address
+                    <input type="email" name="email" />
+                </label>
+                <label>
+                    Password
+                    <input type="password" name="password" />
+                </label>
+                <Button type="submit">Login</Button>
+            </Form>
+        </Wrapper>
+    ) : (
+        <Navigate to="/" />
     );
 };
 
