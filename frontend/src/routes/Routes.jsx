@@ -10,7 +10,7 @@ import AddLink, {
     loader as addLinkLoader,
     action as addLinkAction,
 } from './AddLink';
-import Logout from './Logout';
+import Logout, { loader as logoutLoader } from './Logout';
 
 const Routes = () => {
     const { isAuth } = useAuth();
@@ -28,6 +28,11 @@ const Routes = () => {
                     path: '/login',
                     element: <Login />,
                     action: loginAction,
+                },
+                {
+                    path: '/logout',
+                    element: <Logout />,
+                    loader: logoutLoader,
                 },
             ],
         },
@@ -48,10 +53,7 @@ const Routes = () => {
                     loader: addLinkLoader,
                     action: addLinkAction,
                 },
-                {
-                    path: '/logout',
-                    element: <Logout />,
-                },
+
             ],
         },
     ];
