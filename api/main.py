@@ -12,8 +12,8 @@ from config import settings
 # These are our models
 from models.base import Base
 from models.links import Links, LinksSchema
-from models.users import User, UserSchema, UserAccountSchema
-from models.tokens import Token, TokenData, create_access_token
+from models.users import User, UserBaseSchema, UserSchema, UserAccountSchema
+from models.tokens import Token, create_access_token
 from services import get_current_user_token, create_user, get_user
 
 import jwt
@@ -84,11 +84,6 @@ async def redirect_to_external_url(url: str = Query(...)):
     return RedirectResponse(long_url)
 
 
-@app.get("/user/me")
-async def protected_route(current_user: dict = Depends(get_current_user_token)):
-    return {"user": current_user.email, "user_id": current_user.id}
-
-
 @app.post('/register', response_model=UserSchema)
 def register_user(payload: UserAccountSchema):
     """Processes request to register user account."""
@@ -122,9 +117,26 @@ async def login(payload: UserAccountSchema):
     return Token(access_token=access_token, token_type="bearer")
 
 
-@app.post('/links/add', status_code=200)
-async def add_link(link_data: LinksSchema, current_user: str = Depends(get_current_user_token)):
+@app.get('/logout', status_code=200)
+def logout(token: Token = Depends(get_current_user_token)):
+    try:
+        token = Token(**token.dict())
+        session.add(token)
+        session.commit()
+    except exc.IntegrityError as e:
+        # Rollback the session and raise a custom exception
+        session.rollback()
+        raise settings.CREDENTIALS_EXCEPTION
+    return {"details:": "Logged out"}
+
+@app.get('/getUser', status_code=200)
+async def get_user_id(current_user: str = Depends(get_current_user_token)):
+    return {"email": current_user.email, "id": current_user.id}
+
+
+@app.post('/links/add', response_model=LinksSchema, status_code=200)
+async def add_link(link_data: LinksSchema):
     link = Links(**link_data.dict())
     session.add(link)
     session.commit()
-    return {"Link Added": link.title}
+    return {link}
