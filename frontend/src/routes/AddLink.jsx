@@ -5,6 +5,7 @@ import {
     useActionData,
     useNavigate,
 } from 'react-router-dom';
+import { nanoid } from 'nanoid';
 import Wrapper from '../components/Wrapper';
 import Button from '../components/Button';
 
@@ -15,7 +16,7 @@ export const action = async ({ request }) => {
     const title = formData.get('title');
     const long_url = formData.get('long_url');
     const user_id = formData.get('user_id');
-    const short_url = 'jlkjlkj5l';
+    const short_url = formData.get('short_url');
 
     const linkData = { title, long_url, short_url, user_id: Number(user_id) };
 
@@ -77,6 +78,7 @@ const AddLink = () => {
                     <input type="text" name="long_url" />
                 </label>
                 <input type="hidden" name="user_id" value={user_id} />
+                <input type="hidden" name="short_url" value={nanoid(8)}/>
                 <Button type="submit">Add New Link</Button>
             </Form>
         </Wrapper>
