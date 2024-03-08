@@ -129,14 +129,15 @@ def logout(token: Token = Depends(get_current_user_token)):
         raise settings.CREDENTIALS_EXCEPTION
     return {"details:": "Logged out"}
 
+
 @app.get('/getUser', status_code=200)
 async def get_user_id(current_user: str = Depends(get_current_user_token)):
     return {"email": current_user.email, "id": current_user.id}
 
 
-@app.post('/links/add', response_model=LinksSchema, status_code=200)
+@app.post('/links/add', status_code=200)
 async def add_link(link_data: LinksSchema):
     link = Links(**link_data.dict())
     session.add(link)
     session.commit()
-    return {link}
+    return {"Link added:": link.title}
