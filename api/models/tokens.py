@@ -50,4 +50,4 @@ def create_access_token(data: dict, expires_delta: timedelta | None = None):
 
 def is_token_blacklisted(token):
     # Check if the token is blacklisted in the database
-    return session.query(BlacklistedToken).filter_by(token=token, is_blacklisted=True).first() is not None
+    return session.query(BlacklistedToken).filter_by(token=token).first() is not None
