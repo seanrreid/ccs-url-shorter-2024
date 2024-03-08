@@ -5,8 +5,11 @@ import ProtectedRouteLayout from '../pages/ProtectedRouteLayout';
 import Error from '../pages/Error';
 import Home from './Home';
 import Login, { action as loginAction } from './Login';
-import Links from './Links';
-import AddLink from './AddLink';
+import Links, { loader as linksLoader } from './Links';
+import AddLink, {
+    loader as addLinkLoader,
+    action as addLinkAction,
+} from './AddLink';
 import Logout from './Logout';
 
 const Routes = () => {
@@ -37,10 +40,13 @@ const Routes = () => {
                 {
                     path: '/links/',
                     element: <Links />,
+                    loader: linksLoader,
                 },
                 {
                     path: '/links/add',
                     element: <AddLink />,
+                    loader: addLinkLoader,
+                    action: addLinkAction,
                 },
                 {
                     path: '/logout',

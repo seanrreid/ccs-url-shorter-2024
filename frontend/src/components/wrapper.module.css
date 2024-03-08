@@ -5,7 +5,7 @@
     max-width: 64rem;
     width: 100vw;
 
-    h1 {
+    h1, div {
         width: 100%;
     }
 }
