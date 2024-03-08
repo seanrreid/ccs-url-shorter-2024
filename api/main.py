@@ -1,3 +1,4 @@
+import jwt
 from fastapi import FastAPI, HTTPException, status, Depends, Query
 from fastapi.security import OAuth2PasswordBearer
 from fastapi.responses import JSONResponse
@@ -15,12 +16,11 @@ from config import settings
 from models.base import Base
 from models.links import Links, LinksSchema
 from models.users import User, UserBaseSchema, UserSchema, UserAccountSchema
-from models.tokens import Token, BlacklistedToken, create_access_token
+from models.tokens import Token, BlacklistedToken, generate_token
 from services import get_current_user_token, create_user, get_user
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 
-import jwt
 
 def create_tables():
     Base.metadata.create_all(bind=engine)
@@ -107,12 +107,22 @@ async def login(payload: UserAccountSchema):
             detail="Invalid user credentials"
         )
 
+    """
+    Refresh Token Flow
+    https://www.digitalocean.com/community/tutorials/an-introduction-to-oauth-2#refresh-token-flow
+    """
+
     access_token_expires = timedelta(
         minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
-    access_token = create_access_token(
+    access_token = generate_token(
         data={"email": user.email}, expires_delta=access_token_expires
     )
-    return Token(access_token=access_token, token_type="bearer")
+    refresh_token_expires = timedelta(
+        minutes=settings.REFRESH_TOKEN_EXPIRES_MINUTES)
+    refresh_token = generate_token(
+        data={"email": user.email}, expires_delta=refresh_token_expires
+    )
+    return Token(access_token=access_token, refresh_token=refresh_token, token_type="bearer")
 
 
 @app.get('/logout', status_code=200)

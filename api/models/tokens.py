@@ -21,6 +21,7 @@ class BlacklistedToken(Base):
 
 class Token(BaseModel):
     access_token: str
+    refresh_token: str
     token_type: str = "bearer"
 
 
@@ -28,7 +29,7 @@ class TokenData(BaseModel):
     email: str | None = None
 
 
-def create_access_token(data: dict, expires_delta: timedelta | None = None):
+def generate_token(data: dict, expires_delta: timedelta | None = None):
     # Make a copy so we don't mutate the original data
     to_encode = data.copy()
 
