@@ -2,7 +2,7 @@ from sqlalchemy import Column, String, Integer, DateTime, func
 from datetime import datetime, timedelta, timezone
 from pydantic import BaseModel
 from config import settings
-
+from db import session
 from models.base import Base
 
 import jwt
@@ -11,8 +11,9 @@ import jwt
 class BlacklistedToken(Base):
     __tablename__ = 'blacklisted_tokens'
 
-    id = Column(String, primary_key=True)
+    id = Column(Integer, primary_key=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
+    token = Column(String)
 
     def __repr__(self):
         return f"<BlacklistedToken(id={self.id}, created_at={self.created_at})>"
@@ -44,12 +45,9 @@ def create_access_token(data: dict, expires_delta: timedelta | None = None):
     encoded_jwt = jwt.encode(
         to_encode, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
 
-    if is_token_blacklisted(encoded_jwt):
-        raise ValueError("Token is blacklisted")
-
     return encoded_jwt
 
 
 def is_token_blacklisted(token):
     # Check if the token is blacklisted in the database
-    return BlacklistedToken.objects.filter(token=token).exists()
+    return session.query(BlacklistedToken).filter_by(token=token, is_blacklisted=True).first() is not None
