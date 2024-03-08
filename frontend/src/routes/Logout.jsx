@@ -4,7 +4,7 @@ import { useAuth } from '../AuthContext';
 
 export async function loader() {
     const url = 'http://localhost:8000/logout/';
-    // const refresh_token = localStorage.getItem('refresh_token');
+    const refresh_token = localStorage.getItem('refresh_token');
     const access_token = localStorage.getItem('access_token');
 
     const response = await fetch(url, {
@@ -13,6 +13,7 @@ export async function loader() {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${access_token}`,
         },
+        body: JSON.stringify({ refresh_token }),
     });
     const statusCode = response.status;
     return statusCode === 200 ? true : false;

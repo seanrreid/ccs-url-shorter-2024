@@ -124,7 +124,7 @@ async def login(payload: UserAccountSchema):
     )
     return Token(access_token=access_token, refresh_token=refresh_token, token_type="bearer")
 
-
+# @TODO Need to blacklist refresh tokens here
 @app.get('/logout', status_code=200)
 def logout(token: Token = Depends(oauth2_scheme)):
     try:
@@ -135,7 +135,7 @@ def logout(token: Token = Depends(oauth2_scheme)):
         raise settings.CREDENTIALS_EXCEPTION
     return {"details:": "Logged out"}
 
-
+# @TODO Need to incorporate refresh tokens here
 @app.get('/getUser', status_code=200)
 async def get_user_id(current_user: str = Depends(get_current_user_token)):
     return {"email": current_user.email, "id": current_user.id}
