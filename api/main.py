@@ -13,7 +13,7 @@ from config import settings
 from models.base import Base
 from models.links import Links, LinksSchema
 from models.users import User, UserBaseSchema, UserSchema, UserAccountSchema
-from models.tokens import Token, create_access_token
+from models.tokens import Token, BlacklistedToken, create_access_token
 from services import get_current_user_token, create_user, get_user
 
 import jwt

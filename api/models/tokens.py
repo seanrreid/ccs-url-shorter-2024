@@ -8,20 +8,6 @@ from models.base import Base
 import jwt
 
 
-class Token(Base):
-    __tablename__: 'blacklist'
-    id = Column(Integer, primary_key=True)
-    token = Column(String)
-
-class TokenSchema(BaseModel):
-    access_token: str
-    token_type: str = "bearer"
-
-
-class TokenData(BaseModel):
-    email: str | None = None
-
-
 class BlacklistedToken(Base):
     __tablename__ = 'blacklisted_tokens'
 
@@ -30,6 +16,16 @@ class BlacklistedToken(Base):
 
     def __repr__(self):
         return f"<BlacklistedToken(id={self.id}, created_at={self.created_at})>"
+
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str = "bearer"
+
+
+class TokenData(BaseModel):
+    email: str | None = None
+
 
 def create_access_token(data: dict, expires_delta: timedelta | None = None):
     # Make a copy so we don't mutate the original data
