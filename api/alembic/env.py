@@ -9,6 +9,7 @@ from config import settings
 from models.base import Base
 from models.users import User
 from models.links import Links
+from models.tokens import BlacklistedToken
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
