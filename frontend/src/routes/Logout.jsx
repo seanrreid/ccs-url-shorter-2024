@@ -23,16 +23,19 @@ const Logout = () => {
     const navigate = useNavigate();
     const { setIsAuth } = useAuth();
 
+    let logged_in = true;
+
     if (response) {
         localStorage.clear();
-        setIsAuth(false);
+        logged_in = false;
     } else {
         alert('PROBLEM LOGGING OUT');
     }
 
     useEffect(() => {
+        setIsAuth(logged_in);
         return navigate(`/login`);
-    }, [response, navigate]);
+    }, [setIsAuth, logged_in, response, navigate]);
 };
 
 export default Logout;
