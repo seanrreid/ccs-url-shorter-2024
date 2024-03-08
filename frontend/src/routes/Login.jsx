@@ -27,9 +27,10 @@ export const action = async ({ request }) => {
         const statusCode = response.status;
         const data = await response.json();
 
-        const { access_token } = data;
+        const { access_token, refresh_token } = data;
         localStorage.clear();
         localStorage.setItem('access_token', access_token);
+        localStorage.setItem('refresh_token', refresh_token);
         return statusCode === 200 ? true : false;
     } catch (error) {
         console.error('ERROR: ', error);
