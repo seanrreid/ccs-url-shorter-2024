@@ -1,7 +1,7 @@
 from fastapi import HTTPException, status, Query, Depends
 from fastapi.security import OAuth2PasswordBearer
 from models.users import User, UserAccountSchema
-from models.tokens import TokenData
+from models.tokens import TokenData, is_token_blacklisted
 from db import session
 from config import settings
 
@@ -34,6 +34,9 @@ async def get_current_user_token(token: str = Depends(oauth2_scheme)):
         payload = jwt.decode(token, settings.SECRET_KEY,
                              algorithms=[settings.ALGORITHM])
         email: str = payload.get("email")
+
+        if is_token_blacklisted(token):
+            raise credentials_exception
         if email is None:
             raise credentials_exception
         token_data = TokenData(email=email)
