@@ -1,6 +1,8 @@
 from fastapi import FastAPI, HTTPException, status, Depends, Query
+from fastapi.security import OAuth2PasswordBearer
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
+from sqlalchemy.exc import IntegrityError
 from starlette.responses import RedirectResponse
 from datetime import date, timedelta
 
@@ -13,16 +15,12 @@ from config import settings
 from models.base import Base
 from models.links import Links, LinksSchema
 from models.users import User, UserBaseSchema, UserSchema, UserAccountSchema
-from models.tokens import Token, create_access_token
+from models.tokens import Token, BlacklistedToken, create_access_token
 from services import get_current_user_token, create_user, get_user
 
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
+
 import jwt
-
-"""
-I feel like I can move these and not worry about loading them here?
-I need to look into what some other configs do...
-"""
-
 
 def create_tables():
     Base.metadata.create_all(bind=engine)
@@ -118,14 +116,12 @@ async def login(payload: UserAccountSchema):
 
 
 @app.get('/logout', status_code=200)
-def logout(token: Token = Depends(get_current_user_token)):
+def logout(token: Token = Depends(oauth2_scheme)):
     try:
-        token = Token(**token.dict())
+        token = BlacklistedToken(token=token)
         session.add(token)
         session.commit()
-    except exc.IntegrityError as e:
-        # Rollback the session and raise a custom exception
-        session.rollback()
+    except IntegrityError as e:
         raise settings.CREDENTIALS_EXCEPTION
     return {"details:": "Logged out"}
 
