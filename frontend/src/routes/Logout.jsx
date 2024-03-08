@@ -1,4 +1,5 @@
-import { useLoaderData, Navigate } from 'react-router-dom';
+import { useEffect } from 'react';
+import { useLoaderData, useNavigate } from 'react-router-dom';
 import { useAuth } from '../AuthContext';
 
 export async function loader() {
@@ -19,16 +20,19 @@ export async function loader() {
 
 const Logout = () => {
     const response = useLoaderData();
+    const navigate = useNavigate();
     const { setIsAuth } = useAuth();
 
     if (response) {
         localStorage.clear();
         setIsAuth(false);
-        return <Navigate to="/" />;
     } else {
         alert('PROBLEM LOGGING OUT');
-        return <Navigate to="/" />;
     }
+
+    useEffect(() => {
+        return navigate(`/login`);
+    }, [response, navigate]);
 };
 
 export default Logout;
